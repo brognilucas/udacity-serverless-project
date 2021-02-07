@@ -2,7 +2,7 @@ import {S3Event, SNSEvent, SNSHandler} from 'aws-lambda'
 import 'source-map-support/register'
 
 import {createLogger} from "../../utils/logger";
-import {updateImageUploaded} from "../../services/todoService";
+import {Todo} from "../../services/todoService";
 
 const logger = createLogger("setDownloadUrl")
 
@@ -25,6 +25,6 @@ async function processS3Event(s3Event: S3Event) {
         const index = key.indexOf('_');
         const todoId = key.substr(0, index)
         const userId = decodeURI(key.substr(index + 1))
-        await updateImageUploaded(todoId, userId);
+        await Todo.updateImage(todoId, userId);
     }
 }

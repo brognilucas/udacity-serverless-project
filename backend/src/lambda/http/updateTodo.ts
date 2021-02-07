@@ -4,13 +4,13 @@ import {APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult} fro
 
 import {UpdateTodoRequest} from '../../requests/UpdateTodoRequest'
 import {getUserId} from "../utils";
-import {getTodo, updateTodo} from "../../services/todoService";
+import {Todo} from "../../services/todoService";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
     const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
     const userId = getUserId(event);
-    const todo = await getTodo(todoId)
+    const todo = await Todo.getTodo(todoId)
 
     if (todo == null) {
         return {
@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         }
     }
 
-    await updateTodo(todoId, userId, updatedTodo);
+    await Todo.updateTodo(todoId, userId, updatedTodo);
     return {
         statusCode: 201,
         headers: {
