@@ -59,8 +59,8 @@ export class Todo {
     await TodoRepository.deleteTodo(todoId, userId)
   }
 
-  static async getTodo(todoId: string): Promise<TodoItem> {
-    return await TodoRepository.getTodo(todoId)
+  static async getTodo(userId: string, todoId: string): Promise<TodoItem> {
+    return await TodoRepository.getTodo(userId, todoId)
   }
 
   static async updateImage(todoId: string, userId: string): Promise<void> {

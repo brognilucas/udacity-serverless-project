@@ -14,7 +14,8 @@ export const handler: APIGatewayProxyHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
   const userId = getUserId(event)
-  const todo = await Todo.getTodo(todoId)
+
+  const todo = await Todo.getTodo(userId, todoId)
 
   if (todo == null) {
     return {

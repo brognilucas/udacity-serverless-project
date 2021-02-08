@@ -9,13 +9,11 @@ const XAWS = AWSXRay.captureAWS(AWS)
 export class TodoRepository {
   static readonly dynamoDB: DocumentClient = createDynamoDBClient()
   static readonly todoTable = process.env.TODOS_TABLE
-  static readonly indexName = process.env.USER_ID_INDEX
 
   static async getTodos(userId: string): Promise<TodoItem[]> {
     const result = await this.dynamoDB
       .query({
         KeyConditionExpression: 'userId = :userId',
-        IndexName: this.indexName,
         ExpressionAttributeValues: {
           ':userId': userId
         },
@@ -46,7 +44,8 @@ export class TodoRepository {
       .update({
         TableName: this.todoTable,
         Key: {
-          todoId: todoId
+          todoId,
+          userId
         },
         UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
         ExpressionAttributeValues: {
@@ -71,7 +70,8 @@ export class TodoRepository {
       .update({
         TableName: this.todoTable,
         Key: {
-          todoId: todoId
+          todoId,
+          userId
         },
         UpdateExpression: 'set hasUpload = :hasUpload',
         ExpressionAttributeValues: {
@@ -89,7 +89,8 @@ export class TodoRepository {
       .delete({
         TableName: this.todoTable,
         Key: {
-          todoId: todoId
+          todoId,
+          userId
         },
         ExpressionAttributeValues: {
           ':userId': userId
@@ -99,11 +100,12 @@ export class TodoRepository {
       .promise()
   }
 
-  static async getTodo(todoId: string): Promise<TodoItem> {
+  static async getTodo(userId: string, todoId: string): Promise<TodoItem> {
     const result = await this.dynamoDB
       .get({
         TableName: this.todoTable,
         Key: {
+          userId: userId,
           todoId: todoId
         }
       })
